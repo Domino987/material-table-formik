@@ -10,11 +10,12 @@ Additionally, it allows the validation with [Formik](https://github.com/jaredpal
 
 In addition to the material table props, it also acceepts these optional props:
 
-|  Name | Type | Description |
-|---|---|---|---|---|
-| validate | (value: RowData) => void | object | Promise<FormikErrors<RowData>>; | The Formik validation to be applied to each field |
+  Name | Type | Description |
+|---|---|---|
+| validate | (value: RowData) => void \| object \| Promise<FormikErrors<RowData>>; | The Formik validation to be applied to each field |
 | validationSchema |  any \| (() => any) | The YUP validation schema |
 | localization | deleteHeader?: string <br> deleteAction?: string | The added localisations for the dialog |
+  
 
 ## Author
 
