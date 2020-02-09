@@ -30,7 +30,10 @@
   },
   "name": "material-table-formik",
   "author": "Dominik Engel",
+  "keywords" : ["material-table", "@material-ui", "react", "formik", "YUP"],
+  "description" : "A material-table wrapper to display a dialog for add, edit and delete. It also allwos Formik/YUP validation.",
   "module": "dist/material-table-formik.esm.js",
+  "repository" : {"type": "git", "url": "git://github.com/Domino987/material-table-formik.git"},
   "devDependencies": {
     "@types/jest": "^25.1.2",
     "@types/react": "^16.9.19",
