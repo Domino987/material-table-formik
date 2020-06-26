@@ -192,31 +192,40 @@ function FormikDialog<RowData extends IData>({
                 {mode !== 'delete' &&
                   columns.map(column => (
                     <Field key={column.field} name={column.field}>
-                      {({ field, meta }: FieldAttributes<any>) => (
-                        <div className={classes.field}>
-                          <label htmlFor={column.field as string}>
-                            {column.title}
-                          </label>
-                          <EditCell
-                            {...field}
-                            error={meta.error}
-                            fullWidth={true}
-                            id={column.field}
-                            helperText={meta.error}
-                            columnDef={column}
-                            onChange={(newValue: string | number | boolean) =>
-                              field.onChange({
-                                target: {
-                                  value: newValue,
-                                  checked: newValue,
-                                  name: field.name,
-                                },
-                              })
-                            }
-                            rowData={data}
-                          />
-                        </div>
-                      )}
+                      {({ field, meta }: FieldAttributes<any>) => {
+                        const errorProps: {
+                          helperText?: string;
+                          error?: boolean;
+                        } = {};
+                        if (column.lookup === undefined) {
+                          errorProps.helperText = meta.error;
+                          errorProps.error = meta.error !== undefined;
+                        }
+                        return (
+                          <div className={classes.field}>
+                            <label htmlFor={column.field as string}>
+                              {column.title}
+                            </label>
+                            <EditCell
+                              {...field}
+                              {...errorProps}
+                              fullWidth={true}
+                              id={column.field}
+                              columnDef={column}
+                              onChange={(newValue: string | number | boolean) =>
+                                field.onChange({
+                                  target: {
+                                    value: newValue,
+                                    checked: newValue,
+                                    name: field.name,
+                                  },
+                                })
+                              }
+                              rowData={data}
+                            />
+                          </div>
+                        );
+                      }}
                     </Field>
                   ))}
                 {mode === 'delete' && (
