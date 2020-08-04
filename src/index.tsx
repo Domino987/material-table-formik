@@ -8,6 +8,7 @@ import MaterialTable, {
   Options,
   MTableEditField,
   MTableBodyRow,
+  EditCellColumnDef,
 } from 'material-table';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -108,7 +109,7 @@ interface IFormikDialogProps<RowData extends IData> {
     cancelTooltip: string;
     deleteText: string;
   };
-  options: Options;
+  options: Options<RowData>;
   isTreeData: boolean;
   detailPanel: undefined;
   onEditingCanceled: (
@@ -168,6 +169,59 @@ function FormikDialog<RowData extends IData>({
       title = dialogLocalisation.deleteHeader;
       break;
   }
+  const getEditCell = (
+    column: Column<RowData>,
+    field: any,
+    meta: any,
+    setValues: (rowData: RowData) => void
+  ) => {
+    const onChange = (newValue: string | number | boolean) =>
+      field.onChange({
+        target: {
+          value: newValue,
+          checked: newValue,
+          name: field.name,
+        },
+      });
+    const onRowDataChange = (newRowData: Partial<RowData>) => {
+      if (data) {
+        setValues({
+          ...data,
+          ...newRowData,
+        });
+      }
+    };
+    if (column.editComponent && data) {
+      return column.editComponent({
+        rowData: data,
+        value: field.value,
+        onChange,
+        onRowDataChange,
+        columnDef: column as EditCellColumnDef,
+        error: meta.error !== undefined,
+      });
+    } else {
+      const errorProps: {
+        helperText?: string;
+        error?: boolean;
+      } = {};
+      if (column.lookup === undefined) {
+        errorProps.helperText = meta.error;
+        errorProps.error = meta.error !== undefined;
+      }
+      return (
+        <EditCell
+          {...field}
+          {...errorProps}
+          fullWidth={true}
+          id={column.field}
+          columnDef={column}
+          onChange={onChange}
+          rowData={data}
+        />
+      );
+    }
+  };
   return (
     <>
       <Dialog onClose={closeDialog} open={true} fullWidth={true}>
@@ -186,43 +240,20 @@ function FormikDialog<RowData extends IData>({
             }
           }}
         >
-          {({ isSubmitting, handleSubmit }) => (
+          {({ isSubmitting, handleSubmit, setValues }) => (
             <form onSubmit={handleSubmit}>
               <DialogContent>
                 {mode !== 'delete' &&
                   columns.map(column => (
                     <Field key={column.field} name={column.field}>
                       {({ field, meta }: FieldAttributes<any>) => {
-                        const errorProps: {
-                          helperText?: string;
-                          error?: boolean;
-                        } = {};
-                        if (column.lookup === undefined) {
-                          errorProps.helperText = meta.error;
-                          errorProps.error = meta.error !== undefined;
-                        }
                         return (
                           <div className={classes.field}>
                             <label htmlFor={column.field as string}>
                               {column.title}
                             </label>
-                            <EditCell
-                              {...field}
-                              {...errorProps}
-                              fullWidth={true}
-                              id={column.field}
-                              columnDef={column}
-                              onChange={(newValue: string | number | boolean) =>
-                                field.onChange({
-                                  target: {
-                                    value: newValue,
-                                    checked: newValue,
-                                    name: field.name,
-                                  },
-                                })
-                              }
-                              rowData={data}
-                            />
+                            <br />
+                            {getEditCell(column, field, meta, setValues)}
                           </div>
                         );
                       }}

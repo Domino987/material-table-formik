@@ -17,6 +17,7 @@ const AddSchema = Yup.object().shape({
 });
 
 const App = () => {
+  console.log('Test');
   const [data, setData] = React.useState([
     { name: 'Engel', surname: 'Dominik', birthYear: 1994, birthCity: 63 },
   ]);
@@ -28,6 +29,11 @@ const App = () => {
           { title: 'Name', field: 'name' },
           { title: 'First Name', field: 'surname' },
           { title: 'Birth Year', field: 'birthYear', type: 'numeric' },
+          {
+            title: 'Birth Year',
+            field: 'birthYear',
+            type: 'numeric',
+          },
           {
             title: 'Brith City',
             field: 'birthCity',
