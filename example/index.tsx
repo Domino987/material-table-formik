@@ -32,7 +32,7 @@ const App = () => {
           {
             title: 'Birth Year',
             field: 'birthYear',
-            type: 'numeric',
+            type: 'date',
           },
           {
             title: 'Brith City',

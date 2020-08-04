@@ -49,7 +49,7 @@ function FormikWrapper<RowData extends IData>(
 ) {
   const { localization, components, validate, validationSchema } = props;
 
-  const dialogLocalisation = {
+  const dialogLocalization = {
     addTooltip:
       localization && localization.body
         ? localization.body.addTooltip || 'Add Row'
@@ -75,8 +75,11 @@ function FormikWrapper<RowData extends IData>(
         EditRow: editProps => (
           <FormikDialog
             {...editProps}
+            dateTimePickerLocalization={
+              localization?.body?.dateTimePickerLocalization
+            }
             editField={editField}
-            dialogLocalisation={dialogLocalisation}
+            dialogLocalization={dialogLocalization}
             validate={validate}
             validationSchema={validationSchema}
           />
@@ -92,7 +95,7 @@ interface IFormikDialogProps<RowData extends IData> {
     values: RowData
   ) => void | object | Promise<FormikErrors<RowData>>;
   validationSchema?: any | (() => any);
-  dialogLocalisation: {
+  dialogLocalization: {
     addTooltip: string;
     editTooltip: string;
     deleteHeader: string;
@@ -122,6 +125,7 @@ interface IFormikDialogProps<RowData extends IData> {
     oldData: RowData | undefined
   ) => Promise<void>;
   getFieldValue: (rowData: RowData, columnDef: unknown) => string | number;
+  dateTimePickerLocalization?: IWrapperLocalization;
 }
 
 function FormikDialog<RowData extends IData>({
@@ -132,7 +136,8 @@ function FormikDialog<RowData extends IData>({
   validationSchema,
   mode,
   editField: EditCell,
-  dialogLocalisation,
+  dialogLocalization,
+  dateTimePickerLocalization,
   ...props
 }: IFormikDialogProps<RowData>) {
   const { localization, data, columns } = props;
@@ -160,13 +165,13 @@ function FormikDialog<RowData extends IData>({
   let title;
   switch (mode) {
     case 'add':
-      title = dialogLocalisation.addTooltip;
+      title = dialogLocalization.addTooltip;
       break;
     case 'update':
-      title = dialogLocalisation.editTooltip;
+      title = dialogLocalization.editTooltip;
       break;
     case 'delete':
-      title = dialogLocalisation.deleteHeader;
+      title = dialogLocalization.deleteHeader;
       break;
   }
   const getEditCell = (
@@ -213,6 +218,7 @@ function FormikDialog<RowData extends IData>({
         <EditCell
           {...field}
           {...errorProps}
+          locale={dateTimePickerLocalization}
           fullWidth={true}
           id={column.field}
           columnDef={column}
@@ -231,7 +237,6 @@ function FormikDialog<RowData extends IData>({
           initialValues={initialValues}
           validate={validate}
           onSubmit={async (values, { setSubmitting }) => {
-            console.log('called');
             setSubmitting(true);
             delete values.tableData;
             await onEditingApproved(mode, values, data);
@@ -280,7 +285,7 @@ function FormikDialog<RowData extends IData>({
                       >
                         {mode !== 'delete'
                           ? localization.saveTooltip
-                          : dialogLocalisation.deleteAction}
+                          : dialogLocalization.deleteAction}
                       </Button>
                     </>
                   )}
