@@ -26,9 +26,13 @@ const App = () => {
       <Table
         validationSchema={AddSchema}
         columns={[
-          { title: 'Name', field: 'name' },
-          { title: 'First Name', field: 'surname' },
-          { title: 'Birth Year', field: 'birthYear', type: 'numeric' },
+          { title: 'Name', field: 'name', editable: 'onAdd' },
+          { title: 'First Name', field: 'surname', editable: 'onUpdate' },
+          {
+            title: 'Birth Year',
+            field: 'birthYear',
+            type: 'numeric',
+          },
           {
             title: 'Birth Year',
             field: 'birthYear',

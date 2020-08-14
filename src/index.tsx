@@ -7,6 +7,7 @@ import MaterialTable, {
   Icons,
   Options,
   MTableEditField,
+  MTableCell,
   MTableBodyRow,
   EditCellColumnDef,
 } from 'material-table';
@@ -67,6 +68,7 @@ function FormikWrapper<RowData extends IData>(
   };
 
   const editField = components?.EditField || MTableEditField;
+  const displayField = components?.Cell || MTableCell;
   return (
     <MaterialTable
       {...props}
@@ -79,6 +81,7 @@ function FormikWrapper<RowData extends IData>(
               localization?.body?.dateTimePickerLocalization
             }
             editField={editField}
+            displayField={displayField}
             dialogLocalization={dialogLocalization}
             validate={validate}
             validationSchema={validationSchema}
@@ -101,7 +104,8 @@ interface IFormikDialogProps<RowData extends IData> {
     deleteHeader: string;
     deleteAction: string;
   };
-  editField: () => React.ReactElement<any>;
+  editField: (props: any) => React.ReactElement<any>;
+  displayField: (props: any) => React.ReactElement<any>;
   columns: Column<RowData>[];
   data?: RowData;
   components: Components;
@@ -136,6 +140,7 @@ function FormikDialog<RowData extends IData>({
   validationSchema,
   mode,
   editField: EditCell,
+  displayField: DisplayCell,
   dialogLocalization,
   dateTimePickerLocalization,
   ...props
@@ -180,6 +185,14 @@ function FormikDialog<RowData extends IData>({
     meta: any,
     setValues: (rowData: RowData) => void
   ) => {
+    if (!canEdit(column, mode, data)) {
+      if (column.render && data) {
+        return column.render(data, 'row');
+      } else {
+        console.log('called', column);
+        return <div>{field.value}</div>;
+      }
+    }
     const onChange = (newValue: string | number | boolean) =>
       field.onChange({
         target: {
@@ -302,6 +315,24 @@ function FormikDialog<RowData extends IData>({
       )}
     </>
   );
+}
+
+function canEdit<RowData extends object>(
+  column: Column<RowData>,
+  mode?: 'add' | 'update' | 'delete',
+  data?: RowData
+): boolean {
+  if (typeof column.editable === 'string') {
+    switch (mode) {
+      case 'add':
+        return column.editable === 'always' || column.editable === 'onAdd';
+      case 'update':
+        return column.editable === 'always' || column.editable === 'onUpdate';
+    }
+  } else if (column.editable && data) {
+    return column.editable(column, data);
+  }
+  return true;
 }
 
 export default FormikWrapper;
