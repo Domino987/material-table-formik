@@ -25,8 +25,18 @@ const App = () => {
       <Table
         validationSchema={AddSchema}
         columns={[
-          { title: 'Name', field: 'name', editable: 'onAdd', hidden: true },
-          { title: 'First Name', field: 'surname', editable: 'onUpdate' },
+          {
+            title: 'Name',
+            field: 'name',
+            editable: 'onAdd',
+            gridProps: { xs: 6 },
+          },
+          {
+            title: 'First Name',
+            field: 'surname',
+            editable: 'onUpdate',
+            gridProps: { xs: 6 },
+          },
           {
             title: 'Birth Year',
             field: 'birthYear',

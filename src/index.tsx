@@ -21,6 +21,8 @@ import {
   CircularProgress,
   makeStyles,
   DialogContentText,
+  Grid,
+  GridProps,
 } from '@material-ui/core';
 
 const useStyles = makeStyles({
@@ -28,6 +30,10 @@ const useStyles = makeStyles({
     padding: 8,
   },
 });
+
+interface IColumn<Data extends object> extends Column<Data> {
+  gridProps?: Partial<GridProps>;
+}
 
 interface IData extends Object {
   tableData?: {};
@@ -38,6 +44,7 @@ interface IFormikWrapperProps<RowData extends IData>
   validate?: (value: RowData) => void | object | Promise<FormikErrors<RowData>>;
   validationSchema?: any | (() => any);
   localization?: IWrapperLocalization;
+  columns: IColumn<RowData>[];
 }
 
 interface IWrapperLocalization extends Localization {
@@ -106,7 +113,7 @@ interface IFormikDialogProps<RowData extends IData> {
   };
   editField: (props: any) => React.ReactElement<any>;
   displayField: (props: any) => React.ReactElement<any>;
-  columns: Column<RowData>[];
+  columns: IColumn<RowData>[];
   data?: RowData;
   components: Components;
   icons: Icons;
@@ -180,7 +187,7 @@ function FormikDialog<RowData extends IData>({
       break;
   }
   const getEditCell = (
-    column: Column<RowData>,
+    column: IColumn<RowData>,
     field: any,
     meta: any,
     setValues: (rowData: RowData) => void
@@ -214,7 +221,7 @@ function FormikDialog<RowData extends IData>({
         value: field.value,
         onChange,
         onRowDataChange,
-        columnDef: column as EditCellColumnDef,
+        columnDef: (column as any) as EditCellColumnDef,
         error: meta.error !== undefined,
       });
     } else {
@@ -225,7 +232,6 @@ function FormikDialog<RowData extends IData>({
         helperText: meta.error,
         error: meta.error !== undefined,
       };
-      console.log(errorProps);
       return (
         <EditCell
           {...field}
@@ -260,24 +266,31 @@ function FormikDialog<RowData extends IData>({
           {({ isSubmitting, handleSubmit, setValues }) => (
             <form onSubmit={handleSubmit}>
               <DialogContent>
-                {mode !== 'delete' &&
-                  columns
-                    .filter(column => isColumnVisible(column, mode))
-                    .map(column => (
-                      <Field key={column.field} name={column.field}>
-                        {({ field, meta }: FieldAttributes<any>) => {
-                          return (
-                            <div className={classes.field}>
-                              <label htmlFor={column.field as string}>
-                                {column.title}
-                              </label>
-                              <br />
-                              {getEditCell(column, field, meta, setValues)}
-                            </div>
-                          );
-                        }}
-                      </Field>
-                    ))}
+                <Grid container={true}>
+                  {mode !== 'delete' &&
+                    columns
+                      .filter(column => isColumnVisible(column, mode))
+                      .map(column => (
+                        <Field key={column.field} name={column.field}>
+                          {({ field, meta }: FieldAttributes<any>) => {
+                            return (
+                              <Grid
+                                className={classes.field}
+                                item={true}
+                                xs={12}
+                                {...column.gridProps}
+                              >
+                                <label htmlFor={column.field as string}>
+                                  {column.title}
+                                </label>
+                                <br />
+                                {getEditCell(column, field, meta, setValues)}
+                              </Grid>
+                            );
+                          }}
+                        </Field>
+                      ))}
+                </Grid>
                 {mode === 'delete' && (
                   <DialogContentText>
                     {localization.deleteText}
@@ -319,7 +332,7 @@ function FormikDialog<RowData extends IData>({
 }
 
 function canEdit<RowData extends object>(
-  column: Column<RowData>,
+  column: IColumn<RowData>,
   mode?: 'add' | 'update' | 'delete',
   data?: RowData
 ): boolean {
@@ -337,7 +350,7 @@ function canEdit<RowData extends object>(
 }
 
 function isColumnVisible<RowData extends object>(
-  column: Column<RowData>,
+  column: IColumn<RowData>,
   mode?: 'add' | 'update' | 'delete'
 ) {
   if (mode === 'add') {
@@ -347,3 +360,5 @@ function isColumnVisible<RowData extends object>(
 }
 
 export default FormikWrapper;
+
+export { IFormikWrapperProps, IColumn };
