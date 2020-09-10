@@ -189,7 +189,6 @@ function FormikDialog<RowData extends IData>({
       if (column.render && data) {
         return column.render(data, 'row');
       } else {
-        console.log('called', column);
         return <div>{field.value}</div>;
       }
     }
@@ -222,11 +221,11 @@ function FormikDialog<RowData extends IData>({
       const errorProps: {
         helperText?: string;
         error?: boolean;
-      } = {};
-      if (column.lookup === undefined) {
-        errorProps.helperText = meta.error;
-        errorProps.error = meta.error !== undefined;
-      }
+      } = {
+        helperText: meta.error,
+        error: meta.error !== undefined,
+      };
+      console.log(errorProps);
       return (
         <EditCell
           {...field}
@@ -262,21 +261,23 @@ function FormikDialog<RowData extends IData>({
             <form onSubmit={handleSubmit}>
               <DialogContent>
                 {mode !== 'delete' &&
-                  columns.map(column => (
-                    <Field key={column.field} name={column.field}>
-                      {({ field, meta }: FieldAttributes<any>) => {
-                        return (
-                          <div className={classes.field}>
-                            <label htmlFor={column.field as string}>
-                              {column.title}
-                            </label>
-                            <br />
-                            {getEditCell(column, field, meta, setValues)}
-                          </div>
-                        );
-                      }}
-                    </Field>
-                  ))}
+                  columns
+                    .filter(column => isColumnVisible(column, mode))
+                    .map(column => (
+                      <Field key={column.field} name={column.field}>
+                        {({ field, meta }: FieldAttributes<any>) => {
+                          return (
+                            <div className={classes.field}>
+                              <label htmlFor={column.field as string}>
+                                {column.title}
+                              </label>
+                              <br />
+                              {getEditCell(column, field, meta, setValues)}
+                            </div>
+                          );
+                        }}
+                      </Field>
+                    ))}
                 {mode === 'delete' && (
                   <DialogContentText>
                     {localization.deleteText}
@@ -333,6 +334,16 @@ function canEdit<RowData extends object>(
     return column.editable(column, data);
   }
   return true;
+}
+
+function isColumnVisible<RowData extends object>(
+  column: Column<RowData>,
+  mode?: 'add' | 'update' | 'delete'
+) {
+  if (mode === 'add') {
+    return column.hidden !== true && canEdit(column, mode);
+  }
+  return column.hidden !== true;
 }
 
 export default FormikWrapper;

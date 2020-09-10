@@ -17,7 +17,6 @@ const AddSchema = Yup.object().shape({
 });
 
 const App = () => {
-  console.log('Test');
   const [data, setData] = React.useState([
     { name: 'Engel', surname: 'Dominik', birthYear: 1994, birthCity: 63 },
   ]);
@@ -26,7 +25,7 @@ const App = () => {
       <Table
         validationSchema={AddSchema}
         columns={[
-          { title: 'Name', field: 'name', editable: 'onAdd' },
+          { title: 'Name', field: 'name', editable: 'onAdd', hidden: true },
           { title: 'First Name', field: 'surname', editable: 'onUpdate' },
           {
             title: 'Birth Year',
