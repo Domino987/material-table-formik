@@ -236,7 +236,7 @@ function FormikDialog<RowData extends IData>({
         helperText?: string;
         error?: boolean;
       } = {
-        helperText: meta.error,
+        helperText: meta.touched ? meta.error : '',
         error: meta.touched && meta.error !== undefined,
       };
       return (
