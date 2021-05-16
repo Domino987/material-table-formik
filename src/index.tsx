@@ -16,7 +16,14 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
-import { Formik, Field, FormikErrors, FieldAttributes } from 'formik';
+import {
+  Formik,
+  Field,
+  FormikErrors,
+  FieldAttributes,
+  FieldMetaProps,
+  FieldInputProps,
+} from 'formik';
 import {
   CircularProgress,
   makeStyles,
@@ -188,8 +195,8 @@ function FormikDialog<RowData extends IData>({
   }
   const getEditCell = (
     column: IColumn<RowData>,
-    field: any,
-    meta: any,
+    field: FieldInputProps<RowData>,
+    meta: FieldMetaProps<RowData>,
     setValues: (rowData: RowData) => void
   ) => {
     if (!canEdit(column, mode, data)) {
@@ -222,7 +229,7 @@ function FormikDialog<RowData extends IData>({
         onChange,
         onRowDataChange,
         columnDef: (column as any) as EditCellColumnDef,
-        error: meta.error !== undefined,
+        error: meta.touched && meta.error !== undefined,
       });
     } else {
       const errorProps: {
@@ -230,7 +237,7 @@ function FormikDialog<RowData extends IData>({
         error?: boolean;
       } = {
         helperText: meta.error,
-        error: meta.error !== undefined,
+        error: meta.touched && meta.error !== undefined,
       };
       return (
         <EditCell
