@@ -3,6 +3,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import Table from '../.';
 import * as Yup from 'yup';
+import { TextField } from '@material-ui/core';
 
 const AddSchema = Yup.object().shape({
   name: Yup.string()
@@ -18,7 +19,13 @@ const AddSchema = Yup.object().shape({
 
 const App = () => {
   const [data, setData] = React.useState([
-    { name: 'Engel', surname: 'Dominik', birthYear: 1994, birthCity: 63 },
+    {
+      name: 'Engel',
+      surname: 'Dominik',
+      birthYear: 1994,
+      birthYear1: 1994,
+      birthCity: 63,
+    },
   ]);
   return (
     <div>
@@ -28,8 +35,18 @@ const App = () => {
           {
             title: 'Name',
             field: 'name',
-            editable: 'onAdd',
+            editable: 'always',
             gridProps: { xs: 6 },
+            editComponent: props => (
+              <TextField
+                variant="outlined"
+                type="text"
+                value={props.value}
+                onChange={e => props.onChange(e.target.value)}
+                error={props.error}
+                placeholder={props.columnDef.title}
+              />
+            ),
           },
           {
             title: 'First Name',
@@ -44,7 +61,7 @@ const App = () => {
           },
           {
             title: 'Birth Year',
-            field: 'birthYear',
+            field: 'birthYear1',
             type: 'date',
           },
           {
@@ -57,14 +74,14 @@ const App = () => {
         title="Demo Title"
         editable={{
           onRowAdd: newData =>
-            new Promise((resolve, reject) => {
+            new Promise<void>((resolve, reject) => {
               setTimeout(() => {
                 setData(prevData => [...prevData, newData]);
                 resolve();
               }, 1000);
             }),
           onRowUpdate: (newData, oldData) =>
-            new Promise((resolve, reject) => {
+            new Promise<void>((resolve, reject) => {
               setTimeout(() => {
                 setData(prevData => [
                   ...prevData.filter(x => x !== oldData),
@@ -74,7 +91,7 @@ const App = () => {
               }, 1000);
             }),
           onRowDelete: oldData =>
-            new Promise((resolve, reject) => {
+            new Promise<void>((resolve, reject) => {
               setTimeout(() => {
                 setData(prevData => [...prevData.filter(x => x !== oldData)]);
                 resolve();
