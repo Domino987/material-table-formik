@@ -222,6 +222,13 @@ function FormikDialog<RowData extends IData>({
         });
       }
     };
+    const errorProps: {
+      helperText?: string;
+      error: boolean;
+    } = {
+      helperText: meta.touched ? meta.error : '',
+      error: Boolean(meta.touched && meta.error !== undefined),
+    };
     if (column.editComponent) {
       return column.editComponent({
         rowData: data || ({} as RowData),
@@ -229,16 +236,9 @@ function FormikDialog<RowData extends IData>({
         onChange,
         onRowDataChange,
         columnDef: (column as any) as EditCellColumnDef,
-        error: meta.touched && meta.error !== undefined,
+        ...errorProps,
       });
     } else {
-      const errorProps: {
-        helperText?: string;
-        error?: boolean;
-      } = {
-        helperText: meta.touched ? meta.error : '',
-        error: meta.touched && meta.error !== undefined,
-      };
       return (
         <EditCell
           {...field}
