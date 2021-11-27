@@ -222,9 +222,9 @@ function FormikDialog<RowData extends IData>({
         });
       }
     };
-    if (column.editComponent && data) {
+    if (column.editComponent) {
       return column.editComponent({
-        rowData: data,
+        rowData: data || ({} as RowData),
         value: field.value,
         onChange,
         onRowDataChange,
