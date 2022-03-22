@@ -10,12 +10,12 @@ import MaterialTable, {
   MTableCell,
   MTableBodyRow,
   EditCellColumnDef,
-} from 'material-table';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-import Button from '@material-ui/core/Button';
+} from '@material-table/core';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
 import {
   Formik,
   Field,
@@ -26,17 +26,10 @@ import {
 } from 'formik';
 import {
   CircularProgress,
-  makeStyles,
   DialogContentText,
   Grid,
   GridProps,
-} from '@material-ui/core';
-
-const useStyles = makeStyles({
-  field: {
-    padding: 8,
-  },
-});
+} from '@mui/material';
 
 interface IColumn<Data extends object> extends Column<Data> {
   gridProps?: Partial<GridProps>;
@@ -161,8 +154,6 @@ function FormikDialog<RowData extends IData>({
 }: IFormikDialogProps<RowData>) {
   const { localization, data, columns } = props;
 
-  const classes = useStyles();
-
   const mounted = useRef(false);
 
   useEffect(() => {
@@ -241,6 +232,7 @@ function FormikDialog<RowData extends IData>({
     } else {
       return (
         <EditCell
+          variant="standard"
           {...field}
           {...errorProps}
           locale={dateTimePickerLocalization}
@@ -282,10 +274,10 @@ function FormikDialog<RowData extends IData>({
                           {({ field, meta }: FieldAttributes<any>) => {
                             return (
                               <Grid
-                                className={classes.field}
                                 item={true}
                                 xs={12}
                                 {...column.gridProps}
+                                sx={{ p: 1, ...(column.gridProps?.sx ?? {}) }}
                               >
                                 <label htmlFor={column.field as string}>
                                   {column.title}

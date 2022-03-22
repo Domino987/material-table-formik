@@ -3,7 +3,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import Table from '../.';
 import * as Yup from 'yup';
-import { TextField } from '@material-ui/core';
+import { TextField } from '@mui/material';
 
 const AddSchema = Yup.object().shape({
   name: Yup.string()
@@ -39,7 +39,7 @@ const App = () => {
             gridProps: { xs: 6 },
             editComponent: props => (
               <TextField
-                variant="outlined"
+                variant="standard"
                 type="text"
                 value={props.value}
                 onChange={e => props.onChange(e.target.value)}
