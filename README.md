@@ -1,6 +1,6 @@
-# Material Table Formik with Dialogs
+# Material Table Core Formik with Dialogs
 
-This package is a simple wrapper for [material-table](https://github.com/mbrn/material-table).
+This package is a simple wrapper for [material-table-core](https://github.com/material-table-core/core).
 
 It displays dialogs instead of the inline edit for the Add, Update and Delete actions.
 
@@ -8,7 +8,7 @@ Additionally, it allows the validation with [Formik](https://github.com/jaredpal
 
 ## Now with Grid Support
 
-Add [Material-Ui Grid Props](https://material-ui.com/api/grid/) with gridProps to the columns to order the edit fields within the dialog.
+Add [Mui Grid Props](https://mui.com/api/grid/) with gridProps to the columns to order the edit fields within the dialog.
 
 ```
 gridProps: { xs: 12, md: 6 }
@@ -20,7 +20,7 @@ gridProps: { xs: 12, md: 6 }
 
 ## Requirement
 
-To use material-table-formik, you must use react@16.8.0 or greater which includes hooks.
+To use material-table-formik, you must use react@17.2.0 or greater which includes hooks.
 
 ## Installation
 
@@ -37,7 +37,7 @@ $ npm install --save material-table-formik
 Simply exchange the material table import:
 
 ```
-import MaterialTable from "material-table";
+import MaterialTable from "material-table-core";
 ```
 
 with
